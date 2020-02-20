@@ -10,24 +10,50 @@ import pandas as pd
 from scipy.fftpack import fft
 import scipy.io as scio
 
-# def loadData_from_oneFile(filename):
-#     data=scio.loadmat('/Users/alien/Documents/f盘/毕设数据/12k驱动端/12k_Drive_End_B007_0_118.mat')
-    #   DE_time=data['X11']
-#     return wave
+def loadData_from_oneFile(filename):
+    '''
+    Parameters 
+    filename : the name of one file 
+    ''' 
+    data=scio.loadmat(filename)
+    for key in data.keys():
+        if key[-7:]=='DE_time':
+            wave=data[key]
+            break
+    return wave
 
-# def getFinal_data():
-#     file_list=glob.glob('/Users/alien/Documents/f盘/毕设数据/12k驱动端/'+'12k_Drive_End*')
-#     file_list=sorted(file_list)
-#     Data=[]
-#     for fileName in file_list:
-#         wave=loadData_from_oneFile(fileName)
-#         Data.append(wave[0])
-#     return Data
+def getFinal_data():
+    fileList=glob.glob('/Users/alien/Documents/f盘/毕设数据/12k驱动端/'+'12k_Drive_End*')
+    fileList=sorted(fileList)
+    Data=[]
+    for fileName in fileList:
+        wave=loadData_from_oneFile(fileName)
+        Data.append(wave)
+    return Data
 
-# data=hp.File('/Users/alien/Documents/f盘/毕设数据/12k驱动端/12k_Drive_End_B007_0_118.mat','r')
-# print(data)
-# data.close()
+def myspecfft(wave,fs):
+    '''
+    Parameters
+    ----------
+    wave : a one-dimension array of one file
 
-data=scio.loadmat('/Users/alien/Documents/f盘/毕设数据/12k驱动端/12k_Drive_End_B007_1_119.mat')
-print(data.keys())
+    fs : sampling frequence
+    '''
+    L=len(wave)
+    print(L)
+    wave=wave-np.mean(wave)
+    blmanharris=2.7875*np.blackman(L)
+    wave=wave*blmanharris
+    Wave=fft(wave)/L
+    #采样频率为12k，根据采样定理，频谱上只有0～6k是有效的，保险起见最好取12k/2.56
+    f=(fs/L)*np.array(range(1,int(L/2.56),1))
+    Af=2*abs(Wave[0:int(L/2.56)])
+    #返回值f为频率，Af为幅值
+    return f,Af
 
+def main():
+    Data=getFinal_data()
+    print(Data)
+
+if __name__ == "__main__":
+    main()

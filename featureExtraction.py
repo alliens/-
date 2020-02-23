@@ -85,10 +85,59 @@ def main():
     #四个转速/60得到的倍频均接近30
     #frequencyMul=30
     Data=getFinal_data()
-    Af,f=myspecfft(Data[0],fs)
-    #频谱横坐标两个频率的间隔
-    df=f[1]-f[0]
-    rms_0_10=RMS_fSectionFromInputedSpec(Af,df,fs,20,30)
-    print(rms_0_10)
+    print('len of Data:'+str(len(Data)))
+    Feature=[]
+    for data in Data:
+        # start=datetime.datetime.now()
+        feature=[]
+        Af,f=myspecfft(data,fs)
+        #频谱横坐标两个频率的间隔
+        df=f[1]-f[0]
+        startFre=0
+        endFre=10
+
+        #0X-5X分为15段，每段取RMS
+        for i in range(15):
+            dx=10
+            rms=RMS_fSectionFromInputedSpec(Af,df,fs,startFre,endFre)
+            feature.append(rms)
+            startFre+=dx
+            endFre+=dx
+        
+        #5X-10X分为10段，每段取RMS
+        for i in range(10):
+            startFre=150
+            endFre=165
+            dx=15
+            rms=RMS_fSectionFromInputedSpec(Af,df,fs,startFre,endFre)
+            feature.append(rms)
+            startFre+=dx
+            endFre+=dx
+
+        #10X-20X分为10段，每段取RMS
+        for i in range(10):
+            startFre=300
+            endFre=330
+            dx=30
+            rms=RMS_fSectionFromInputedSpec(Af,df,fs,startFre,endFre)
+            feature.append(rms)
+            startFre+=dx
+            endFre+=dx
+
+        #20X-100X分为8段，分段取最大值，若超过采样频率限制，则取0
+        for i in range(8):
+            startFre=600
+            endFre=900
+            dx=300
+            Max=max(Af[startFre:endFre+1])
+            feature.append(Max)
+            startFre+=dx
+            endFre+=dx
+        Feature.append(feature)
+        # end=datetime.datetime.now()
+        # print("处理每个文件的time:"+str(end-start))
+    for fe in Feature:
+        print(fe)
+
 if __name__ == "__main__":
     main()

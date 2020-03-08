@@ -1,3 +1,4 @@
+import csv
 import datetime
 import glob
 import math
@@ -23,8 +24,8 @@ def loadData_from_oneFile(filename):
             wave=data[key]
     return wave
 
-def getFinal_data():
-    fileList=glob.glob('/Users/alien/Documents/f盘/毕设数据/12k驱动端/'+'12k_Drive_End*')
+def getFinal_data(dirPath):
+    fileList=glob.glob(dirPath)
     fileList=sorted(fileList)
     Data=[]
     for fileName in fileList:
@@ -81,18 +82,23 @@ def RMS_fSectionFromInputedSpec(VibSpec,df,Fs,StartF,EndF):
 def main():
     fs=12000
     #负载分别为0,1,2,3的转速
-    # RPM=[1797,1772,1750,1730]
+    #RPM=[1797,1772,1750,1730]
     #四个转速/60得到的倍频均接近30
     #frequencyMul=30
-    Data=getFinal_data()
-    print('len of Data:'+str(len(Data)))
+    dirPath_1='/Users/alien/Documents/f盘/毕设数据/12k驱动端/'+'12k_Drive_End*'
+    dirPath_2='/Users/alien/Documents/f盘/毕设数据/正常数据集/'+'normal*'
+    Data=getFinal_data(dirPath_1)
+    data=getFinal_data(dirPath_2)
+    Data.extend(data)
     Feature=[]
-    for data in Data:
+    for j in range(len(Data)):
         # start=datetime.datetime.now()
+        data=Data[j]
         feature=[]
         Af,f=myspecfft(data,fs)
         #频谱横坐标两个频率的间隔
         df=f[1]-f[0]
+
         startFre=0
         endFre=10
 
@@ -133,11 +139,18 @@ def main():
             feature.append(Max)
             startFre+=dx
             endFre+=dx
+        #添加label：0->正常；1->异常
+        if j>=60:
+            feature.append(0)
+        else:
+            feature.append(1)
         Feature.append(feature)
         # end=datetime.datetime.now()
         # print("处理每个文件的time:"+str(end-start))
-    for fe in Feature:
-        print(fe)
+    with open('dataWithLabel.csv','w') as csvfile:
+        writer=csv.writer(csvfile)
+        for fe in Feature:
+            writer.writerow(fe)
 
 if __name__ == "__main__":
     main()

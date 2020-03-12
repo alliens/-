@@ -43,16 +43,16 @@ x_vals_test=x_vals_test.reshape((x_vals_test.shape[0],x_vals_test.shape[1],1))
 
 y_vals_train=y_vals_train.reshape((y_vals_train.shape[0],1))
 y_vals_test=y_vals_test.reshape((y_vals_test.shape[0],1))
-print(np.shape(x_vals_train))
-print(np.shape(x_vals_test))
+# print(np.shape(x_vals_train))
+# print(np.shape(x_vals_test))
 
-print(np.shape(y_vals_train))
-print(np.shape(y_vals_test))
+# print(np.shape(y_vals_train))
+# print(np.shape(y_vals_test))
 
 '''
 初始化参数
 '''
-batch_size=16
+batch_size=32
 epochs=10
 '''
 建立训练模型
@@ -73,10 +73,10 @@ model.add(MaxPooling1D(4))
 #Convolution Layer (filter_shape=1*9,num_filter=40)
 model.add(Conv1D(40,9,padding='same',activation='relu'))
 
-#将最后一层卷积层的扁平化后再输入到全连接网络
+#Flatten the last Convolution layer and input the fully-connected layer
 model.add(Flatten())
-#rate=0.5表示丢弃的比例，将50%的数据置为0，有助于防止过拟合
-model.add(Dropout(0.2))
+#rate = 0.5 indicates the percentage of discards. Setting 50% of the data to 0 helps prevent overfitting.
+model.add(Dropout(0.3))
 
 #Fully Connected MLP Layer (20 neurons)
 model.add(Dense(20,activation='relu'))

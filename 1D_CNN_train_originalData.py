@@ -52,7 +52,7 @@ print(np.shape(y_vals_test))
 '''
 初始化参数
 '''
-batch_size=16
+batch_size=32
 epochs=10
 '''
 建立训练模型
@@ -76,7 +76,7 @@ model.add(Conv1D(40,9,padding='same',activation='relu'))
 #将最后一层卷积层的扁平化后再输入到全连接网络
 model.add(Flatten())
 #rate=0.5表示丢弃的比例，将50%的数据置为0，有助于防止过拟合
-model.add(Dropout(0.2))
+model.add(Dropout(0.3))
 
 #Fully Connected MLP Layer (20 neurons)
 model.add(Dense(20,activation='relu'))

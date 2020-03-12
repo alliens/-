@@ -13,4 +13,4 @@
             3、使用实验室小轴承台的轴承故障数据对CNN进行迁移训练
    
    第二第三步详细步骤有待完善！
-![Image text]（https://github.com/alliens/-/blob/master/Image/structure.png）
+![Image text](https://github.com/alliens/-/blob/master/Image/structure.png?raw=true)

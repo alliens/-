@@ -11,8 +11,8 @@
             （负载为0，1，2，3的转速分别为1797，1772，1750，1730，由rpm/60=倍频，可得不同负载情况下的倍频均接近30Hz，故取倍频X=30Hz）
             2、构建CNN模型对频域特征进行训练，构造二分类器，实现异常检测
               （1）利用tensorflow后端的keras建立自己的训练模型，模型结构参照某大神论文，结构如下：
-              ![Image text](https://github.com/alliens/-/blob/master/Image/structure.png?raw=true)
               （2）12kHz-DE端轴承故障数据文件60个，正常数据文件4个，正常数据标记0，故障数据标记1，分别将提取完特征并作好标签的数据和作好标签的原始时序数据输入到同一个网络中训练，分析并观察其诊断性能。
               （3）分别对输入数据不同的两个网络（结构相同）进行调参（Dropout rate、batch_size、epochs），使得网络在准确率达标的情况下（90%以上）泛化性最好。
             3、使用实验室小轴承台的轴承故障数据对CNN进行迁移训练
    
+![Image text](https://github.com/alliens/-/blob/master/Image/structure.png?raw=true)

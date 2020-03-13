@@ -52,7 +52,7 @@ y_vals_test=y_vals_test.reshape((y_vals_test.shape[0],1))
 '''
 初始化参数
 '''
-batch_size=32
+batch_size=16
 epochs=10
 '''
 建立训练模型

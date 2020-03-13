@@ -52,8 +52,8 @@ print(np.shape(y_vals_test))
 '''
 初始化参数
 '''
-batch_size=32
-epochs=10
+batch_size=20
+epochs=20
 '''
 建立训练模型
 '''
@@ -94,7 +94,9 @@ model.compile(loss='binary_crossentropy',
 
 
 History=model.fit(x_vals_train,y_vals_train,
-            batch_size=batch_size,validation_data=(x_vals_test, y_vals_test),epochs=epochs)
+            batch_size=batch_size,
+            validation_data=(x_vals_test, y_vals_test),
+            epochs=epochs)
 
 score=model.evaluate(x_vals_test,y_vals_test,
             batch_size=batch_size)

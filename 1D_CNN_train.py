@@ -29,9 +29,9 @@ y_vals=y_data.astype(np.float64)
 
 
 '''
-将数据集分为训练集/测试集=80%/20%
+将数据集分为训练集/测试集=70%/30%
 '''
-train_indices = np.random.choice(len(x_vals), round(len(x_vals)*0.8), replace=False)
+train_indices = np.random.choice(len(x_vals), round(len(x_vals)*0.7), replace=False)
 test_indices = np.array(list(set(range(len(x_vals))) - set(train_indices)))
 x_vals_train = x_vals[train_indices]
 x_vals_test = x_vals[test_indices]
@@ -43,17 +43,13 @@ x_vals_test=x_vals_test.reshape((x_vals_test.shape[0],x_vals_test.shape[1],1))
 
 y_vals_train=y_vals_train.reshape((y_vals_train.shape[0],1))
 y_vals_test=y_vals_test.reshape((y_vals_test.shape[0],1))
-# print(np.shape(x_vals_train))
-# print(np.shape(x_vals_test))
 
-# print(np.shape(y_vals_train))
-# print(np.shape(y_vals_test))
 
 '''
 初始化参数
 '''
-batch_size=32
-epochs=10
+batch_size=16
+epochs=30
 '''
 建立训练模型
 '''
@@ -76,7 +72,7 @@ model.add(Conv1D(40,9,padding='same',activation='relu'))
 #Flatten the last Convolution layer and input the fully-connected layer
 model.add(Flatten())
 #rate = 0.5 indicates the percentage of discards. Setting 50% of the data to 0 helps prevent overfitting.
-model.add(Dropout(0.3))
+model.add(Dropout(0.5))
 
 #Fully Connected MLP Layer (20 neurons)
 model.add(Dense(20,activation='relu'))

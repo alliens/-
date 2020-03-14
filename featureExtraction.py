@@ -99,46 +99,46 @@ def main():
         #频谱横坐标两个频率的间隔
         df=f[1]-f[0]
 
-        startFre=0
-        endFre=10
 
         #0X-5X分为15段，每段取RMS
+        startFre_1=0
+        endFre_1=10
         for i in range(15):
             dx=10
-            rms=RMS_fSectionFromInputedSpec(Af,df,fs,startFre,endFre)
+            rms=RMS_fSectionFromInputedSpec(Af,df,fs,startFre_1,endFre_1)
             feature.append(rms)
-            startFre+=dx
-            endFre+=dx
+            startFre_1+=dx
+            endFre_1+=dx
         
         #5X-10X分为10段，每段取RMS
+        startFre_2=150
+        endFre_2=165
         for i in range(10):
-            startFre=150
-            endFre=165
             dx=15
-            rms=RMS_fSectionFromInputedSpec(Af,df,fs,startFre,endFre)
+            rms=RMS_fSectionFromInputedSpec(Af,df,fs,startFre_2,endFre_2)
             feature.append(rms)
-            startFre+=dx
-            endFre+=dx
+            startFre_2+=dx
+            endFre_2+=dx
 
         #10X-20X分为10段，每段取RMS
+        startFre_3=300
+        endFre_3=330
         for i in range(10):
-            startFre=300
-            endFre=330
             dx=30
-            rms=RMS_fSectionFromInputedSpec(Af,df,fs,startFre,endFre)
+            rms=RMS_fSectionFromInputedSpec(Af,df,fs,startFre_3,endFre_3)
             feature.append(rms)
-            startFre+=dx
-            endFre+=dx
+            startFre_3+=dx
+            endFre_3+=dx
 
         #20X-100X分为8段，分段取最大值，若超过采样频率限制，则取0
+        startFre_4=600
+        endFre_4=900
         for i in range(8):
-            startFre=600
-            endFre=900
             dx=300
-            Max=max(Af[startFre:endFre+1])
+            Max=max(Af[startFre_4:endFre_4+1])
             feature.append(Max)
-            startFre+=dx
-            endFre+=dx
+            startFre_4+=dx
+            endFre_4+=dx
         #添加label：0->正常；1->异常
         if j>=60:
             feature.append(0)

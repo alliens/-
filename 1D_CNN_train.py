@@ -14,18 +14,19 @@ os.environ['KMP_DUPLICATE_LIB_OK']='True'
 '''
 读取带有标签的训练数据
 '''
-with open ('/Users/alien/Documents/d盘/python/本科毕设/dataWithLabel.csv','r') as f:
+with open ('/Users/alien/Documents/d盘/python/本科毕设/featureDataWithLabel.csv','r') as f:
     reader=csv.reader(f)
     Data=[]
     for row in reader:
         Data.append(row)
     Data=np.array(Data)
 
-x_data=np.array([x[0:44] for x in Data])
+x_data=np.array([x[0:43] for x in Data])
 y_data=np.array([x[-1] for x in Data])
 
 x_vals=x_data.astype(np.float64)
 y_vals=y_data.astype(np.float64)
+
 
 
 '''
@@ -49,7 +50,7 @@ y_vals_test=y_vals_test.reshape((y_vals_test.shape[0],1))
 初始化参数
 '''
 batch_size=16
-epochs=30
+epochs=50
 '''
 建立训练模型
 '''
@@ -72,7 +73,7 @@ model.add(Conv1D(40,9,padding='same',activation='relu'))
 #Flatten the last Convolution layer and input the fully-connected layer
 model.add(Flatten())
 #rate = 0.5 indicates the percentage of discards. Setting 50% of the data to 0 helps prevent overfitting.
-model.add(Dropout(0.5))
+model.add(Dropout(0.3))
 
 #Fully Connected MLP Layer (20 neurons)
 model.add(Dense(20,activation='relu'))

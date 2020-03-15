@@ -27,17 +27,30 @@ y_data=np.array([x[-1] for x in Data])
 x_vals=x_data.astype(np.float64)
 y_vals=y_data.astype(np.float64)
 
+'''
+使结果可以重现
+'''
+np.random.seed(3)
 
 '''
 将数据集分为训练集/测试集=70%/30%
 '''
-train_indices = np.random.choice(len(x_vals), round(len(x_vals)*0.7), replace=False)
+train_indices = np.random.choice(len(x_vals), round(len(x_vals)*0.8), replace=False)
 test_indices = np.array(list(set(range(len(x_vals))) - set(train_indices)))
 x_vals_train = x_vals[train_indices]
 x_vals_test = x_vals[test_indices]
 y_vals_train = y_vals[train_indices]
 y_vals_test = y_vals[test_indices]
 
+'''
+初始化参数
+'''
+batch_size=10
+epochs=20 #epoch=30时train_acc和test_acc均能达到100%
+
+'''
+将输入数据reshape符合Conv1D的input_shape
+'''
 x_vals_train=x_vals_train.reshape((x_vals_train.shape[0],x_vals_train.shape[1],1))
 x_vals_test=x_vals_test.reshape((x_vals_test.shape[0],x_vals_test.shape[1],1))
 
@@ -45,11 +58,7 @@ y_vals_train=y_vals_train.reshape((y_vals_train.shape[0],1))
 y_vals_test=y_vals_test.reshape((y_vals_test.shape[0],1))
 
 
-'''
-初始化参数
-'''
-batch_size=16
-epochs=20
+
 '''
 建立训练模型
 '''
@@ -91,7 +100,7 @@ model.compile(loss='binary_crossentropy',
 History=model.fit(x_vals_train,y_vals_train,
             batch_size=batch_size,
             validation_data=(x_vals_test, y_vals_test),
-            epochs=epochs)
+            epochs=epochs,verbose=2)
 
 score=model.evaluate(x_vals_test,y_vals_test,
             batch_size=batch_size)
@@ -100,7 +109,7 @@ print('acc='+str(score[1]*100))
 
 #画结果图（train_loss、test_loss、train_acc、test_acc)
 N=np.arange(1,epochs+1)
-title='Training Loss and Accuracy on CWRU dataset(12k-FE)'
+title='Training Loss and Accuracy on CWRU dataset(12k-DE)'
 
 plt.style.use('ggplot')
 # plt.figure()

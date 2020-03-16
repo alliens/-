@@ -21,11 +21,26 @@ with open ('/Users/alien/Documents/d盘/python/本科毕设/featureDataWithLabel
         Data.append(row)
     Data=np.array(Data)
 
+#训练集是12k驱动端提取特征后的数据集
 x_data=np.array([x[0:43] for x in Data])
 y_data=np.array([x[-1] for x in Data])
 
-x_vals=x_data.astype(np.float64)
-y_vals=y_data.astype(np.float64)
+x_vals_train=x_data.astype(np.float64)
+y_vals_train=y_data.astype(np.float64)
+
+with open ('/Users/alien/Documents/d盘/python/本科毕设/originalDataWithLabel_700.csv','r') as f:
+    reader=csv.reader(f)
+    Data_test=[]
+    for row in reader:
+        Data_test.append(row)
+    Data_test=np.array(Data_test)
+
+#测试集是12k驱动端原始数据集
+x_data_test=np.array([x[0:43] for x in Data_test])
+y_data_test=np.array([x[-1] for x in Data_test])
+
+x_vals_test=x_data_test.astype(np.float64)
+y_vals_test=y_data_test.astype(np.float64)
 
 '''
 使结果可以重现
@@ -35,12 +50,12 @@ np.random.seed(7)
 '''
 将数据集分为训练集/测试集=80%/20%
 '''
-train_indices = np.random.choice(len(x_vals), round(len(x_vals)*0.8), replace=False)
-test_indices = np.array(list(set(range(len(x_vals))) - set(train_indices)))
-x_vals_train = x_vals[train_indices]
-x_vals_test = x_vals[test_indices]
-y_vals_train = y_vals[train_indices]
-y_vals_test = y_vals[test_indices]
+# train_indices = np.random.choice(len(x_vals), round(len(x_vals)*0.8), replace=False)
+# test_indices = np.array(list(set(range(len(x_vals))) - set(train_indices)))
+# x_vals_train = x_vals[train_indices]
+# x_vals_test = x_vals[test_indices]
+# y_vals_train = y_vals[train_indices]
+# y_vals_test = y_vals[test_indices]
 
 '''
 初始化参数

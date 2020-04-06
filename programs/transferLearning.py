@@ -7,38 +7,38 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy.io as scio
-from keras.layers import (Conv1D, Dense, Dropout, Embedding, Flatten,
-                          MaxPooling1D,Activation,BatchNormalization)
+from keras.layers import (Activation, BatchNormalization, Conv1D, Dense,
+                          Dropout, Embedding, Flatten, MaxPooling1D)
 from keras.models import Sequential
-from keras.utils import to_categorical
-from keras.optimizers import SGD
+from keras.optimizers import RMSprop
 from keras.regularizers import l2
+from keras.utils import to_categorical
 
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
 #正常数据标签0，滚动体故障标签1，内圈故障标签2，外圈故障标签3
 
 
-with open ('/Users/alien/Documents/d盘/python/本科毕设/XiaoZhouCheng_Horizontal_1200r.csv','r') as f:
+with open ('/Users/alien/Documents/d盘/python/本科毕设/XiaoZhouCheng_Vertical_1500r.csv','r') as f:
     reader=csv.reader(f)
     Data=[]
     for row in reader:
         Data.append(row)
     Data=np.array(Data)
 
-with open ('/Users/alien/Documents/d盘/python/本科毕设/XiaoZhouCheng_Horizontal_1200r.csv','r') as f:
-    reader=csv.reader(f)
-    Data_test=[]
-    for row in reader:
-        Data_test.append(row)
-    Data_test=np.array(Data_test)
+# with open ('/Users/alien/Documents/d盘/python/本科毕设/XiaoZhouCheng_Horizontal_1200r.csv','r') as f:
+#     reader=csv.reader(f)
+#     Data_test=[]
+#     for row in reader:
+#         Data_test.append(row)
+#     Data_test=np.array(Data_test)
 
 '''
 初始化参数
 '''
-batch_size=8
-epochs=50
+batch_size=4
+epochs=100
 num_class=4 
-np.random.seed(2)
+np.random.seed(6)
 
 x_data=np.array([x[0:2000] for x in Data])
 y_data=np.array([x[-1] for x in Data])
@@ -75,7 +75,6 @@ x_vals_test = np.nan_to_num(normalize_cols(x_vals_test))
 x_vals_train=x_vals_train.reshape((x_vals_train.shape[0],x_vals_train.shape[1],1))
 x_vals_test=x_vals_test.reshape((x_vals_test.shape[0],x_vals_test.shape[1],1))
 
-
 '''
 建立训练模型
 '''
@@ -84,7 +83,6 @@ model=Sequential()
 model.add(Conv1D(60,9,padding='same',input_shape=(x_vals_train.shape[1],1)))
 model.add(BatchNormalization())
 model.add(Activation('relu'))
-
 #Subsampling Layer (filter_shape=1*4)
 model.add(MaxPooling1D(4))
 
@@ -92,6 +90,7 @@ model.add(MaxPooling1D(4))
 model.add(Conv1D(40,9,padding='same'))
 model.add(BatchNormalization())
 model.add(Activation('relu'))
+
 #Subsampling Layer (filter_shape=1*4)
 model.add(MaxPooling1D(4))
 
@@ -106,30 +105,26 @@ model.add(Dropout(0.5))
 #Fully Connected MLP Layer (20 neurons)
 model.add(Dense(20,activation='relu',kernel_regularizer=l2(0.01)))
 
-#Output Layer (only 1 neuron for 2 classes)
+model.load_weights('baseModle_twoClass.h5',by_name=True)
+
 model.add(Dense(4,activation='softmax',kernel_regularizer=l2(0.01)))
+
+# for layer in model.layers[:6]:
+#     layer.trainable=False
+
 
 '''
 编译训练模型
 '''
-
 model.compile(loss='categorical_crossentropy',
               optimizer='rmsprop',
               metrics=['accuracy'])
-
-
 
 History=model.fit(x_vals_train,y_vals_train,
             batch_size=batch_size,
             validation_data=(x_vals_test,y_vals_test),
             epochs=epochs,verbose=2)
 
-score=model.evaluate(x_vals_test,y_vals_test,
-            batch_size=batch_size)
-
-
-
-#画结果图（train_loss、test_loss、train_acc、test_acc)
 N=np.arange(1,epochs+1)
 title='Training Loss and Accuracy on CWRU dataset(12k-DE)'
 
@@ -144,3 +139,15 @@ plt.xlabel('Epoch')
 plt.ylabel('Loss/Accuracy')
 plt.legend()
 plt.show()
+
+# #权重探针
+# mod=model.get_weights()
+# print(mod)
+
+print('参与训练的权值名称：')
+for x in model.trainable_weights:
+    print(x.name)
+
+# print('不参与训练的权值名称：')
+# for x in model.non_trainable_weights:
+#     print(x.name)

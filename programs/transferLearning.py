@@ -17,39 +17,45 @@ from keras.utils import to_categorical
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
 #正常数据标签0，滚动体故障标签1，内圈故障标签2，外圈故障标签3
 
+dataPath_900='/Users/alien/Documents/d盘/python/本科毕设/files/XiaoZhouCheng_Vertical_900r.csv'
+dataPath_1200='/Users/alien/Documents/d盘/python/本科毕设/files/XiaoZhouCheng_Vertical_1200r.csv'
+dataPath_1500='/Users/alien/Documents/d盘/python/本科毕设/files/XiaoZhouCheng_Vertical_1500r.csv'
 
-with open ('/Users/alien/Documents/d盘/python/本科毕设/XiaoZhouCheng_Vertical_1500r.csv','r') as f:
+rpm=input('Please input the rpm you wanna choose:')
+if rpm == '900':
+    dataPath=dataPath_900
+    epochs=30
+    np.random.seed(3)
+elif rpm == '1200':
+    dataPath=dataPath_1200
+    epochs=30
+    np.random.seed(4)
+else:
+    dataPath=dataPath_1500
+    epochs=10
+    np.random.seed(6)
+
+
+with open (dataPath,'r') as f:
     reader=csv.reader(f)
     Data=[]
     for row in reader:
         Data.append(row)
     Data=np.array(Data)
 
-# with open ('/Users/alien/Documents/d盘/python/本科毕设/XiaoZhouCheng_Horizontal_1200r.csv','r') as f:
-#     reader=csv.reader(f)
-#     Data_test=[]
-#     for row in reader:
-#         Data_test.append(row)
-#     Data_test=np.array(Data_test)
 
 '''
 初始化参数
 '''
-batch_size=4
-epochs=100
+batch_size=20
 num_class=4 
-np.random.seed(6)
+
 
 x_data=np.array([x[0:2000] for x in Data])
 y_data=np.array([x[-1] for x in Data])
 
-# x_data_test=np.array([x[0:2000] for x in Data_test])
-# y_data_test=np.array([x[-1] for x in Data_test])
-
 x_vals=x_data.astype(np.float64)
 y_vals=y_data.astype(np.float64)
-# x_vals_test=x_data_test.astype(np.float64)
-# y_vals_test=y_data_test.astype(np.float64)
 
 train_indices = np.random.choice(len(x_vals), round(len(x_vals)*0.5), replace=False)
 test_indices = np.array(list(set(range(len(x_vals))) - set(train_indices)))
@@ -144,9 +150,9 @@ plt.show()
 # mod=model.get_weights()
 # print(mod)
 
-print('参与训练的权值名称：')
-for x in model.trainable_weights:
-    print(x.name)
+# print('参与训练的权值名称：')
+# for x in model.trainable_weights:
+#     print(x.name)
 
 # print('不参与训练的权值名称：')
 # for x in model.non_trainable_weights:

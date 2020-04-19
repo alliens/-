@@ -14,14 +14,14 @@ os.environ['KMP_DUPLICATE_LIB_OK']='True'
 '''
 读取带有标签的训练数据
 '''
-with open ('/Users/alien/Documents/d盘/python/本科毕设/dataWithLabel_2000_DE.csv','r') as f:
+with open ('/Users/alien/Documents/d盘/python/本科毕设/files/dataWithLabel_2000_DE.csv','r') as f:
     reader=csv.reader(f)
     Data=[]
     for row in reader:
         Data.append(row)
     Data=np.array(Data)
 
-with open ('/Users/alien/Documents/d盘/python/本科毕设/dataWithLabel_2000_FE.csv','r') as f:
+with open ('/Users/alien/Documents/d盘/python/本科毕设/files/dataWithLabel_2000_FE.csv','r') as f:
     reader=csv.reader(f)
     Data_test=[]
     for row in reader:

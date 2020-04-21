@@ -14,39 +14,38 @@ os.environ['KMP_DUPLICATE_LIB_OK']='True'
 '''
 读取带有标签的训练数据
 '''
-with open ('/Users/alien/Documents/d盘/python/本科毕设/files/dataWithLabel_2000_DE.csv','r') as f:
+with open ('/Users/alien/Documents/d盘/python/本科毕设/files/featureDataWithLabel.csv','r') as f:
     reader=csv.reader(f)
     Data=[]
     for row in reader:
         Data.append(row)
     Data=np.array(Data)
 
-with open ('/Users/alien/Documents/d盘/python/本科毕设/files/dataWithLabel_2000_FE.csv','r') as f:
-    reader=csv.reader(f)
-    Data_test=[]
-    for row in reader:
-        Data_test.append(row)
-    Data_test=np.array(Data_test)
-
-#训练集是12k驱动端原始数据集
-x_data=np.array([x[0:2000] for x in Data])
+#训练集是12k驱动端提取特征后的数据集
+x_data=np.array([x[0:43] for x in Data])
 y_data=np.array([x[-1] for x in Data])
-
-#测试集是12k风扇端原始数据集
-# x_data_test=np.array([x[0:2000] for x in Data_test])
-# y_data_test=np.array([x[-1] for x in Data_test])
 
 x_vals=x_data.astype(np.float64)
 y_vals=y_data.astype(np.float64)
 
+# with open ('/Users/alien/Documents/d盘/python/本科毕设/files/featureDataWithLabel.csv','r') as f:
+#     reader=csv.reader(f)
+#     Data_test=[]
+#     for row in reader:
+#         Data_test.append(row)
+#     Data_test=np.array(Data_test)
+
+# #测试集是12k驱动端原始数据集
+# x_data_test=np.array([x[0:43] for x in Data_test])
+# y_data_test=np.array([x[-1] for x in Data_test])
+
 # x_vals_test=x_data_test.astype(np.float64)
 # y_vals_test=y_data_test.astype(np.float64)
-
 
 '''
 使结果可以重现
 '''
-np.random.seed(3)
+np.random.seed(7)
 
 '''
 将数据集分为训练集/测试集=80%/20%
@@ -58,19 +57,19 @@ x_vals_test = x_vals[test_indices]
 y_vals_train = y_vals[train_indices]
 y_vals_test = y_vals[test_indices]
 
-# def normalize_cols(m):
-#     col_max = m.max(axis=0)
-#     col_min = m.min(axis=0)
-#     return (m-col_min) / (col_max - col_min)
+def normalize_cols(m):
+    col_max = m.max(axis=0)
+    col_min = m.min(axis=0)
+    return (m-col_min) / (col_max - col_min)
     
-# x_vals_train = np.nan_to_num(normalize_cols(x_vals_train))
-# x_vals_test = np.nan_to_num(normalize_cols(x_vals_test))
+x_vals_train = np.nan_to_num(normalize_cols(x_vals_train))
+x_vals_test = np.nan_to_num(normalize_cols(x_vals_test))
 
 '''
 初始化参数
 '''
-batch_size=15
-epochs=20 #epoch=30时train_acc和test_acc均能达到100%
+batch_size=16
+epochs=100
 
 '''
 将输入数据reshape符合Conv1D的input_shape
@@ -81,19 +80,12 @@ x_vals_test=x_vals_test.reshape((x_vals_test.shape[0],x_vals_test.shape[1],1))
 y_vals_train=y_vals_train.reshape((y_vals_train.shape[0],1))
 y_vals_test=y_vals_test.reshape((y_vals_test.shape[0],1))
 
-
-
 '''
 建立训练模型
 '''
 model=Sequential()
 #Convolution Layer (filter_shape=1*9,num_filter=60)
 model.add(Conv1D(60,9,padding='same',activation='relu',input_shape=(x_vals_train.shape[1],1)))
-#Subsampling Layer (filter_shape=1*4)
-model.add(MaxPooling1D(4))
-
-#Convolution Layer (filter_shape=1*9,num_filter=40)
-model.add(Conv1D(40,9,padding='same',activation='relu'))
 
 #Subsampling Layer (filter_shape=1*4)
 model.add(MaxPooling1D(4))
@@ -101,10 +93,16 @@ model.add(MaxPooling1D(4))
 #Convolution Layer (filter_shape=1*9,num_filter=40)
 model.add(Conv1D(40,9,padding='same',activation='relu'))
 
-#将最后一层卷积层的扁平化后再输入到全连接网络
+#Subsampling Layer (filter_shape=1*4)
+model.add(MaxPooling1D(4))
+
+#Convolution Layer (filter_shape=1*9,num_filter=40)
+model.add(Conv1D(40,9,padding='same',activation='relu'))
+
+#Flatten the last Convolution layer and input the fully-connected layer
 model.add(Flatten())
-#rate=0.5表示丢弃的比例，将50%的数据置为0，有助于防止过拟合
-model.add(Dropout(0.5))
+#rate = 0.5 indicates the percentage of discards. Setting 50% of the data to 0 helps prevent overfitting.
+model.add(Dropout(0.3))
 
 #Fully Connected MLP Layer (20 neurons)
 model.add(Dense(20,activation='relu'))
@@ -128,7 +126,7 @@ History=model.fit(x_vals_train,y_vals_train,
 
 score=model.evaluate(x_vals_test,y_vals_test,
             batch_size=batch_size)
-print('acc='+str(score[1]*100))
+
 
 
 #画结果图（train_loss、test_loss、train_acc、test_acc)
@@ -147,13 +145,7 @@ plt.ylabel('Loss/Accuracy')
 plt.legend()
 plt.show()
 
-# #保存模型
-# model_json=model.to_json()
-# with open ('baseModle_twoClass_new.json','w') as f:
-#     f.write(model_json)
 
-# #保存模型权重
-# model.save_weights('baseModle_twoClass_new.h5')
 
-# mod=model.get_weights()
-# print(mod)
+
+

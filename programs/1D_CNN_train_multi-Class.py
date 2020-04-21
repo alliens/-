@@ -18,38 +18,26 @@ os.environ['KMP_DUPLICATE_LIB_OK']='True'
 #正常数据标签0，滚动体故障标签1，内圈故障标签2，外圈故障标签3
 
 
-with open ('/Users/alien/Documents/d盘/python/本科毕设/XiaoZhouCheng_Vertical_1500r.csv','r') as f:
+with open ('/Users/alien/Documents/d盘/python/本科毕设/files/XiaoZhouCheng_Vertical_1500r.csv','r') as f:
     reader=csv.reader(f)
     Data=[]
     for row in reader:
         Data.append(row)
     Data=np.array(Data)
 
-# with open ('/Users/alien/Documents/d盘/python/本科毕设/XiaoZhouCheng_Horizontal_1200r.csv','r') as f:
-#     reader=csv.reader(f)
-#     Data_test=[]
-#     for row in reader:
-#         Data_test.append(row)
-#     Data_test=np.array(Data_test)
-
 '''
 初始化参数
 '''
-batch_size=8
-epochs=50
+batch_size=20
+epochs=30
 num_class=4 
-np.random.seed(6)
+np.random.seed(6) #900-4，1200-3，1500-6
 
 x_data=np.array([x[0:2000] for x in Data])
 y_data=np.array([x[-1] for x in Data])
 
-# x_data_test=np.array([x[0:2000] for x in Data_test])
-# y_data_test=np.array([x[-1] for x in Data_test])
-
 x_vals=x_data.astype(np.float64)
 y_vals=y_data.astype(np.float64)
-# x_vals_test=x_data_test.astype(np.float64)
-# y_vals_test=y_data_test.astype(np.float64)
 
 train_indices = np.random.choice(len(x_vals), round(len(x_vals)*0.5), replace=False)
 test_indices = np.array(list(set(range(len(x_vals))) - set(train_indices)))
@@ -131,7 +119,7 @@ score=model.evaluate(x_vals_test,y_vals_test,
 
 #画结果图（train_loss、test_loss、train_acc、test_acc)
 N=np.arange(1,epochs+1)
-title='Training Loss and Accuracy on CWRU dataset(12k-DE)'
+title='Training Loss and Accuracy on 小轴承实验台故障数据集'
 
 plt.style.use('ggplot')
 # plt.figure()

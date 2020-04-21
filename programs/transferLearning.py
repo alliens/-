@@ -24,7 +24,7 @@ dataPath_1500='/Users/alien/Documents/d盘/python/本科毕设/files/XiaoZhouChe
 rpm=input('Please input the rpm you wanna choose:')
 if rpm == '900':
     dataPath=dataPath_900
-    epochs=30
+    epochs=100
     np.random.seed(3)
 elif rpm == '1200':
     dataPath=dataPath_1200
@@ -132,7 +132,7 @@ History=model.fit(x_vals_train,y_vals_train,
             epochs=epochs,verbose=2)
 
 N=np.arange(1,epochs+1)
-title='Training Loss and Accuracy on CWRU dataset(12k-DE)'
+title='Training Loss and Accuracy on CWRU 小轴承实验台数据集'
 
 plt.style.use('ggplot')
 # plt.figure()

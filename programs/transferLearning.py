@@ -24,7 +24,7 @@ dataPath_1500='/Users/alien/Documents/d盘/python/本科毕设/files/XiaoZhouChe
 rpm=input('Please input the rpm you wanna choose:')
 if rpm == '900':
     dataPath=dataPath_900
-    epochs=100
+    epochs=30
     np.random.seed(3)
 elif rpm == '1200':
     dataPath=dataPath_1200
@@ -117,7 +117,6 @@ model.add(Dense(4,activation='softmax',kernel_regularizer=l2(0.01)))
 
 # for layer in model.layers[:6]:
 #     layer.trainable=False
-
 
 '''
 编译训练模型
